@@ -23,7 +23,7 @@
 
   ```
   sudo docker run \
-	-p 5432:5432 \
+	-p 5434:5432 \
 	--name postgres-db \
 	-e POSTGRES_USER=jira \
 	-e POSTGRES_PASSWORD=JiraRush \
@@ -36,7 +36,7 @@
 -- Запуск postgres в docker-контейнере, где:
 
   ```
-  -p 5432:5432 - порт, на котором запускается база данных
+  -p 5434:5432 - порт, на котором запускается база данных
   --name postgres-db - имя docker-контейнера
   -e POSTGRES_PASSWORD=JiraRush - пароль от базы данных
   -e POSTGRES_USER=jira - имя учетной записи пользователя базы данных
@@ -50,7 +50,7 @@
 
   ```
   1. host - ip-адрес сервера
-  2. port - 5432
+  2. port - 5434
   3. username - jira
   4. password - JiraRush
   5. table - jira
