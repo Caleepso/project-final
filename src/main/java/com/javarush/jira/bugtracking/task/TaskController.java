@@ -10,6 +10,8 @@ import com.javarush.jira.bugtracking.task.to.TaskToFull;
 import com.javarush.jira.bugtracking.tree.ITreeNode;
 import com.javarush.jira.common.util.Util;
 import com.javarush.jira.login.AuthUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -155,5 +157,13 @@ public class TaskController {
         public TaskTreeNode(TaskTo taskTo) {
             this(taskTo, new LinkedList<>());
         }
+    }
+    @PatchMapping("/{id}/tags")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "adding task tag")
+    public void addTaskTags(@Parameter(description = "task id") @PathVariable("id") Long taskId,
+                            @RequestBody String... tags) {
+        log.debug("adding tags {} for task id {}", tags, taskId);
+        taskService.updateTags(taskId, tags);
     }
 }

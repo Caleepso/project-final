@@ -14,18 +14,23 @@ import com.javarush.jira.common.error.NotFoundException;
 import com.javarush.jira.common.util.Util;
 import com.javarush.jira.login.AuthUser;
 import com.javarush.jira.ref.RefType;
+import com.javarush.jira.ref.ReferenceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.javarush.jira.bugtracking.ObjectType.TASK;
 import static com.javarush.jira.bugtracking.task.TaskUtil.fillExtraFields;
 import static com.javarush.jira.bugtracking.task.TaskUtil.makeActivity;
 import static com.javarush.jira.ref.ReferenceService.getRefTo;
+import com.javarush.jira.ref.RefTo;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +44,7 @@ public class TaskService {
     private final SprintRepository sprintRepository;
     private final TaskExtMapper extMapper;
     private final UserBelongRepository userBelongRepository;
+    private final TaskRepository taskRepository;
 
     @Transactional
     public void changeStatus(long taskId, String statusCode) {
@@ -139,5 +145,25 @@ public class TaskService {
         if (!userType.equals(possibleUserType)) {
             throw new DataConflictException(String.format(assign ? CANNOT_ASSIGN : CANNOT_UN_ASSIGN, userType, task.getStatusCode()));
         }
+    }
+    public void updateTags(Long taskId, String... tags) {
+        Task task = taskRepository.getExisted(taskId);
+        task.setTags(checkTags(tags));
+        taskRepository.save(task);
+    }
+    private Set<String> checkTags(String... tags) {
+        List<String> availableTags = getAppTags();
+
+        return Arrays.stream(tags)
+                .map(String::toLowerCase)
+                .filter(availableTags::contains)
+                .collect(Collectors.toSet());
+    }
+    public List<String> getAppTags() {
+        return ReferenceService.getRefs(RefType.TAG)
+                .values()
+                .stream()
+                .map(RefTo::getCode)
+                .toList();
     }
 }

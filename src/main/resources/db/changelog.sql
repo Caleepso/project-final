@@ -329,3 +329,12 @@ values ('todo', 'ToDo', 3, 'in_progress,canceled|'),
 
 drop index UK_USER_BELONG;
 create unique index UK_USER_BELONG on USER_BELONG (OBJECT_ID, OBJECT_TYPE, USER_ID, USER_TYPE_CODE) where ENDPOINT is null;
+
+--changeset caleepso:add_tags
+--============ References =================
+insert into REFERENCE (CODE,TITLE,REF_TYPE)
+-- TAG
+values ('easy', 'Easy', 8),
+       ('normal', 'Normal', 8),
+       ('hard', 'Hard', 8),
+       ('extra', 'Extra Hard', 8);
