@@ -341,7 +341,24 @@ values ('easy', 'Easy', 8),
 
 --changeset caleepso:add_activities
 --============ Activities =================
+delete from project where id = 5;
+
+insert into PROJECT (id, code, title, description, type_code, parent_id)
+values (5, 'JiraRushProject', 'JiraRush', '«Mini-JIRA» app : project management system tutorial app', 'task_tracker', null);
+
+delete from SPRINT where id = 6;
+
+insert into SPRINT (id, status_code, startpoint, endpoint, code, project_id)
+values (6, 'active', null, null, 'Sprint-6', 5);
+
+insert into TASK (ID, TITLE, TYPE_CODE, STATUS_CODE, PROJECT_ID, SPRINT_ID, PARENT_ID, STARTPOINT)
+values (177, 'Add role manager and filters in security', 'task', 'done', 5, 6, null,
+        now() + random() * interval '5 minutes' + random() * interval '20 seconds');
+
+insert into USERS (ID, EMAIL, PASSWORD, FIRST_NAME, LAST_NAME, DISPLAY_NAME)
+values (999,'user999@gmail.com', '{noop}password', 'userFirstName999', 'userLastName999', 'userDisplayName999');
+
 insert into ACTIVITY ( ID, AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE )
-values(8, 2, 17, '2023-12-15T08:30:00.753321', 'in_progress'),
-      (9, 2, 17, '2023-12-16T15:30:00.223414', 'ready_for_review'),
-      (10, 2, 17, '2023-12-17T21:00:15.536245', 'done');
+values(8, 999, 177, '2023-12-15T08:30:00.753321', 'in_progress'),
+      (9, 999, 177, '2023-12-16T15:30:00.223414', 'ready_for_review'),
+      (10, 999, 177, '2023-12-17T21:00:15.536245', 'done');
