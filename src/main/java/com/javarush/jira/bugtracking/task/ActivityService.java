@@ -8,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.javarush.jira.bugtracking.task.TaskUtil.getLatestValue;
 
@@ -16,8 +19,11 @@ import static com.javarush.jira.bugtracking.task.TaskUtil.getLatestValue;
 @RequiredArgsConstructor
 public class ActivityService {
     private final TaskRepository taskRepository;
-
     private final Handlers.ActivityHandler handler;
+
+    private static final String IN_PROGRESS = "in_progress";
+    private static final String READY_FOR_REVIEW = "ready_for_revie";
+    private static final String DONE = "done";
 
     private static void checkBelong(HasAuthorId activity) {
         if (activity.getAuthorId() != AuthUser.authId()) {
@@ -71,6 +77,26 @@ public class ActivityService {
                 }
                 task.setTypeCode(latestType);
             }
+        }
+    }
+
+    public long workTime(Task task) {
+        Optional<LocalDateTime> inProgressTimestamp = handler.getRepository().findUpdatedByTaskIdAndStatus(task.id(), IN_PROGRESS);
+        Optional<LocalDateTime> readyForReviewTimestamp = handler.getRepository().findUpdatedByTaskIdAndStatus(task.id(), READY_FOR_REVIEW);
+        if (inProgressTimestamp.isPresent() && readyForReviewTimestamp.isPresent()) {
+            return Duration.between(inProgressTimestamp.get(), readyForReviewTimestamp.get()).toDaysPart();
+        } else {
+            return -1;
+        }
+    }
+
+    public long testTime(Task task) {
+        Optional<LocalDateTime> readyForReviewTimestamp = handler.getRepository().findUpdatedByTaskIdAndStatus(task.id(), READY_FOR_REVIEW);
+        Optional<LocalDateTime> doneTimestamp = handler.getRepository().findUpdatedByTaskIdAndStatus(task.id(), DONE);
+        if (readyForReviewTimestamp.isPresent() && doneTimestamp.isPresent()) {
+            return Duration.between(readyForReviewTimestamp.get(), doneTimestamp.get()).toDaysPart();
+        } else {
+            return -1;
         }
     }
 }

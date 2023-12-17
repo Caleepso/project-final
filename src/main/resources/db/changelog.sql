@@ -338,3 +338,10 @@ values ('easy', 'Easy', 8),
        ('normal', 'Normal', 8),
        ('hard', 'Hard', 8),
        ('extra', 'Extra Hard', 8);
+
+--changeset caleepso:add_activities
+--============ Activities =================
+insert into ACTIVITY ( ID, AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE )
+values(8, 2, 17, '2023-12-15T08:30:00.753321', 'in_progress'),
+      (9, 2, 17, '2023-12-16T15:30:00.223414', 'ready_for_review'),
+      (10, 2, 17, '2023-12-17T21:00:15.536245', 'done');
